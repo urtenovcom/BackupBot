@@ -1,0 +1,125 @@
+# ==============================================================================
+# BackupBot - Configuration Example
+# ==============================================================================
+# Stable unique identifier for this server/VPS.
+# Must contain only latin letters, digits, and underscores (e.g. vps_01, prod_node_1).
+server_id: "vps_01"
+
+# ------------------------------------------------------------------------------
+# Telegram Bot Configuration
+# ------------------------------------------------------------------------------
+# All VPS instances can use the SAME bot token and target chat ID!
+# Use environment variables ${VAR_NAME} for tokens and credentials.
+telegram:
+  bot_token: "${TELEGRAM_BOT_TOKEN}"
+  chat_id: "${TELEGRAM_CHAT_ID}"
+  api_url: "https://api.telegram.org"
+  timeout_seconds: 180
+  max_retries: 5
+
+# ------------------------------------------------------------------------------
+# Storage and State Tracking Settings
+# ------------------------------------------------------------------------------
+storage:
+  # Temporary working directory for creating staging copies and tar archives
+  work_dir: "/var/tmp/backupbot"
+  # SQLite database path for tracking backup history and resume states
+  state_db: "/var/lib/backupbot/backupbot.db"
+  # Minimum required free disk space in MB to start backup
+  min_free_space_mb: 500
+
+# ------------------------------------------------------------------------------
+# Backup Projects Configuration
+# ------------------------------------------------------------------------------
+projects:
+  # ----------------------------------------------------------------------------
+  # Project 1: Web application with PostgreSQL and media uploads
+  # ----------------------------------------------------------------------------
+  - id: "my_website"
+    name: "My Website"
+    # Schedule using standard 5-part cron syntax (e.g. at 03:00 every day)
+    schedule: "0 3 * * *"
+    timezone: "Europe/Moscow"
+
+    # Regular files, folders, and compose definitions
+    paths:
+      - "/opt/my_website/docker-compose.yml"
+      - "/opt/my_website/.env.example"
+      - "/opt/my_website/data/uploads"
+
+    # Named Docker volumes to backup
+    volumes:
+      - "my_website_static_assets"
+
+    # Databases to dump using native container tools (pg_dump)
+    databases:
+      - type: "postgres"
+        container: "my_website_postgres_1"
+        db_name: "production_db"
+        user: "postgres"
+        password: "${MY_WEBSITE_DB_PASSWORD}"
+        extra_args:
+          - "--clean"
+          - "--if-exists"
+
+    # Exclusion patterns (cache, logs, temporary files)
+    exclude:
+      - "*.log"
+      - "*.tmp"
+      - ".cache"
+      - "cache/*"
+      - "node_modules"
+
+    # Optional pre-backup and post-backup hooks for data consistency
+    # Note: post_backup runs ALWAYS, even if the backup encounters an error!
+    hooks:
+      pre_backup: "docker exec -i my_website_app_1 /bin/sh -c 'echo Maintenance mode enabled'"
+      post_backup: "docker exec -i my_website_app_1 /bin/sh -c 'echo Maintenance mode disabled'"
+
+    # Age asymmetric encryption
+    # Put only recipient's PUBLIC key (age1...) here. The private key remains secure on your PC!
+    encryption:
+      enabled: true
+      recipient: "${AGE_PUBLIC_KEY}"
+
+    # Days to keep successful archives locally on this VPS before deletion (0 = delete right away)
+    retention_days: 7
+
+    # Max size in MB for each part sent to Telegram (Standard Cloud Bot API limit is 50 MB)
+    split_size_mb: 45
+
+  # ----------------------------------------------------------------------------
+  # Project 2: Internal CRM with MariaDB / MySQL
+  # ----------------------------------------------------------------------------
+  - id: "crm_portal"
+    name: "Корпоративный CRM"
+    schedule: "30 4 * * *"
+    timezone: "Europe/Moscow"
+
+    paths:
+      - "/opt/crm/compose.yaml"
+      - "/opt/crm/config"
+
+    volumes:
+      - "crm_attachments"
+
+    databases:
+      - type: "mariadb"
+        container: "crm_mariadb_1"
+        db_name: "crm_db"
+        user: "root"
+        password: "${CRM_DB_PASSWORD}"
+        extra_args:
+          - "--single-transaction"
+          - "--quick"
+
+    exclude:
+      - "temp/*"
+      - "*.log"
+
+    encryption:
+      enabled: true
+      recipient: "${AGE_PUBLIC_KEY}"
+
+    retention_days: 14
+    split_size_mb: 45
