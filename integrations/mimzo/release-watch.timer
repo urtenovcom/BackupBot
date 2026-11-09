@@ -1,0 +1,10 @@
+[Unit]
+Description=Check Mimzo upstream releases every six hours
+
+[Timer]
+OnCalendar=*-*-* 00,06,12,18:10:00 Europe/Moscow
+Persistent=true
+Unit=mimzo-release-watch.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+{
+  "private_chat_id": "362867621",
+  "state_path": "/var/lib/backupbot/release-watch/state.json",
+  "repositories": [
+    {"name": "Панель Remnawave", "repo": "remnawave/backend"},
+    {"name": "Ноды Remnawave", "repo": "remnawave/node"},
+    {"name": "Бот Бедолаги", "repo": "BEDOLAGA-DEV/remnawave-bedolaga-telegram-bot"},
+    {"name": "Веб-кабинет Бедолаги", "repo": "BEDOLAGA-DEV/bedolaga-cabinet"}
+  ]
+}

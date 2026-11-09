@@ -1,0 +1,12 @@
+[Unit]
+Description=Mimzo upstream release notifications to owner
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/backupbot
+EnvironmentFile=/etc/backupbot/telegram.env
+ExecStart=/opt/backupbot/.venv/bin/python -m backupbot.release_watch --config /etc/backupbot/releases.json
+UMask=0077
+TimeoutStartSec=240
