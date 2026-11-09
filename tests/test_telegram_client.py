@@ -113,3 +113,29 @@ def test_telegram_api_error_raises():
         client.send_message("-100123", "Test error")
 
     assert "Chat not found" in str(exc.value)
+
+@pytest.mark.parametrize('document', [False, True])
+def test_forum_topic_applies_to_messages_and_documents(tmp_path, document):
+    session = MagicMock()
+    response = session.request.return_value
+    response.ok = True
+    response.status_code = 200
+    response.json.return_value = {'ok': True, 'result': {'message_id': 42}}
+    client = TelegramClient('123:TEST', session=session, message_thread_id=17)
+    if document:
+        path = tmp_path / 'backup.age'
+        path.write_bytes(b'encrypted')
+        client.send_document('-100123', str(path), 'backup.age', 'backup')
+    else:
+        client.send_message('-100123', 'backup status')
+    assert session.request.call_args.kwargs['data']['message_thread_id'] == 17
+
+
+def test_ordinary_chat_does_not_send_topic_id():
+    session = MagicMock()
+    response = session.request.return_value
+    response.ok = True
+    response.status_code = 200
+    response.json.return_value = {'ok': True, 'result': {'message_id': 42}}
+    TelegramClient('123:TEST', session=session).send_message('123', 'backup status')
+    assert 'message_thread_id' not in session.request.call_args.kwargs['data']

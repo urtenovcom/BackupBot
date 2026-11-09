@@ -1,5 +1,6 @@
 server_id: mimzo_cdn_193
 telegram:
+  message_thread_id: ${TELEGRAM_MESSAGE_THREAD_ID}
   bot_token: ${TELEGRAM_BOT_TOKEN}
   chat_id: ${TELEGRAM_CHAT_ID}
   api_url: https://api.telegram.org

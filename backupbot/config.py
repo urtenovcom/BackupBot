@@ -40,6 +40,7 @@ def deep_expand_env(data: Any) -> Any:
 
 
 class TelegramConfig(BaseModel):
+    message_thread_id: Optional[int] = Field(default=None, ge=1, description="Telegram forum topic ID")
     bot_token: str = Field(..., description="Telegram Bot API Token")
     chat_id: str = Field(..., description="Telegram Chat or Channel ID (e.g. -100...)")
     api_url: str = Field(default="https://api.telegram.org", description="Telegram Bot API base URL")

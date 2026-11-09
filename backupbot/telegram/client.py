@@ -31,7 +31,9 @@ class TelegramClient:
         timeout: int = 120,
         max_retries: int = 5,
         session: Optional[requests.Session] = None,
+        message_thread_id: Optional[int] = None,
     ):
+        self.message_thread_id = message_thread_id
         self.bot_token = bot_token.strip()
         self.base_url = f"{api_url.rstrip('/')}/bot{self.bot_token}"
         self.timeout = timeout
@@ -143,6 +145,7 @@ class TelegramClient:
                 "chat_id": chat_id,
                 "text": text,
                 "disable_web_page_preview": True,
+                **({"message_thread_id": self.message_thread_id} if self.message_thread_id is not None else {}),
             },
         )
         return result["result"]["message_id"]
@@ -173,6 +176,7 @@ class TelegramClient:
             data = {
                 "chat_id": chat_id,
                 "caption": caption,
+                **({"message_thread_id": self.message_thread_id} if self.message_thread_id is not None else {}),
             }
             result = self._request_with_retry(
                 method="POST",

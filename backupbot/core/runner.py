@@ -39,6 +39,7 @@ class BackupRunner:
         self.retention = RetentionManager(self.db)
         self.telegram = telegram_client or TelegramClient(
             bot_token=config.telegram.bot_token,
+            message_thread_id=config.telegram.message_thread_id,
             api_url=config.telegram.api_url,
             timeout=config.telegram.timeout_seconds,
             max_retries=config.telegram.max_retries,

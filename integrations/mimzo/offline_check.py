@@ -11,6 +11,7 @@ from backupbot.utils.disk import compute_sha256
 os.umask(0o077)
 os.environ['TELEGRAM_BOT_TOKEN'] = 'offline:NOT_A_REAL_TOKEN'
 os.environ['TELEGRAM_CHAT_ID'] = 'offline-NO_DELIVERY'
+os.environ['TELEGRAM_MESSAGE_THREAD_ID'] = '1'
 for line in Path('/etc/backupbot/public.env').read_text().splitlines():
     k, v = line.split('=', 1)
     os.environ[k] = v
