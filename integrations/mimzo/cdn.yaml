@@ -1,0 +1,28 @@
+server_id: mimzo_cdn_193
+telegram:
+  bot_token: ${TELEGRAM_BOT_TOKEN}
+  chat_id: ${TELEGRAM_CHAT_ID}
+  api_url: https://api.telegram.org
+  timeout_seconds: 180
+  max_retries: 5
+storage:
+  work_dir: /var/lib/backupbot/work
+  state_db: /var/lib/backupbot/state.db
+  min_free_space_mb: 1500
+projects:
+- id: mimzo_cdn
+  name: Mimzo cdn
+  schedule: 40 */6 * * *
+  timezone: Europe/Moscow
+  paths:
+  - /var/lib/backupbot/export
+  databases: []
+  hooks:
+    pre_backup: /opt/backupbot/.venv/bin/python /opt/backupbot/integrations/mimzo/prepare.py
+      cdn
+    post_backup: rm -rf /var/lib/backupbot/export
+  encryption:
+    enabled: true
+    recipient: ${AGE_PUBLIC_KEY}
+  retention_days: 7
+  split_size_mb: 45

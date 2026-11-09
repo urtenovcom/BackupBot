@@ -1,0 +1,21 @@
+[Unit]
+Description=Mimzo encrypted Telegram backups
+After=network-online.target docker.service
+Wants=network-online.target
+ConditionPathExists=/etc/backupbot/telegram.env
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/backupbot
+EnvironmentFile=/etc/backupbot/public.env
+EnvironmentFile=/etc/backupbot/telegram.env
+ExecStart=/opt/backupbot/.venv/bin/python -m backupbot.cli run-scheduler --config /etc/backupbot/config.yaml
+Restart=on-failure
+RestartSec=30
+UMask=0077
+Nice=15
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+
+[Install]
+WantedBy=multi-user.target
