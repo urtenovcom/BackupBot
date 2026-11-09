@@ -14,7 +14,7 @@ storage:
 projects:
 - id: mimzo_panel
   name: Mimzo panel
-  schedule: 20 3 * * *
+  schedule: 0 3 * * *
   timezone: Europe/Moscow
   paths:
   - /var/lib/backupbot/export

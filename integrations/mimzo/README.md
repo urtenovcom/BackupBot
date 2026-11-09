@@ -3,7 +3,7 @@
 Hosts: production141.133.180.149; panel177.3.208.71; CDN193.23.202.9.
 Native venv /opt/backupbot/.venv; runtime /var/lib/backupbot; private config /etc/backupbot. Service mimzo-backupbot.service enabled on all3 hosts Nov9 after real delivery verification.
 
-Schedules Europe/Moscow DAILY: production03:00, panel03:20, CDN03:40. Retention7days encrypted, parts45MiB. Separate success summaries disabled (notify_success=false); files/captions and failure alerts still sent to topic Mimzo.
+Schedules Europe/Moscow DAILY: production03:00, panel03:00, CDN03:00. Retention7days encrypted, parts45MiB. Separate success summaries disabled (notify_success=false); files/captions and failure alerts still sent to topic Mimzo.
 
 Set AGE_PUBLIC_KEY in public.env. Dedicated TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID/TELEGRAM_MESSAGE_THREAD_ID go in telegram.env (root0600). Source both env files when invoking CLI manually; systemd loads them automatically. Never write real tokens into this repository.
 
@@ -18,3 +18,5 @@ Verified Nov9: actual production DB is bot_upgrade, NOT empty default recovery. 
 Telegram target: Alazar Backups group -1004373207327, topic Mimzo message_thread_id2. First real document message IDs: production10,panel6,CDN8; all state.db parts UPLOADED. Initial delivery Nov9~17:08Moscow. Next scheduled production18:00,panel18:20,CDN18:40. Notifications and documents use same topic.
 
 Nov9 owner changed frequency to daily and requested quiet success. Next jobs Nov10 03:00/03:20/03:40Moscow. No extra test archives sent for this configuration change.
+
+Owner synchronized all3 daily jobs to03:00Europe/Moscow Nov9. Archives arrive independently as each completes; quiet success retained.
