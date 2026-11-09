@@ -1,5 +1,6 @@
 server_id: mimzo_panel_177
 telegram:
+  notify_success: false
   message_thread_id: ${TELEGRAM_MESSAGE_THREAD_ID}
   bot_token: ${TELEGRAM_BOT_TOKEN}
   chat_id: ${TELEGRAM_CHAT_ID}
@@ -13,7 +14,7 @@ storage:
 projects:
 - id: mimzo_panel
   name: Mimzo panel
-  schedule: 20 */6 * * *
+  schedule: 20 3 * * *
   timezone: Europe/Moscow
   paths:
   - /var/lib/backupbot/export

@@ -264,20 +264,21 @@ class BackupRunner:
             finished_time = datetime.now(tz)
             self.db.update_backup(backup_id, status="SUCCESS", stage=current_stage, finished_at=finished_time)
 
-            # Send final success confirmation message
-            summary_msg = format_success_summary(
-                project_name=project.name,
-                server_id=self.config.server_id,
-                project_id=project.id,
-                started_at=started_at,
-                backup_id=backup_id,
-                total_parts=len(parts),
-                total_size_bytes=total_size_bytes,
-            )
-            try:
-                self.telegram.send_message(self.config.telegram.chat_id, summary_msg)
-            except Exception as e:
-                logger.warning("Backup uploaded, but failed to send final confirmation message: %s", e)
+            if self.config.telegram.notify_success:
+                # Send final success confirmation message
+                summary_msg = format_success_summary(
+                    project_name=project.name,
+                    server_id=self.config.server_id,
+                    project_id=project.id,
+                    started_at=started_at,
+                    backup_id=backup_id,
+                    total_parts=len(parts),
+                    total_size_bytes=total_size_bytes,
+                )
+                try:
+                    self.telegram.send_message(self.config.telegram.chat_id, summary_msg)
+                except Exception as e:
+                    logger.warning("Backup uploaded, but failed to send final confirmation message: %s", e)
 
             # 12. Local Retention Cleanup
             self.retention.cleanup_expired_backups(project.retention_days)

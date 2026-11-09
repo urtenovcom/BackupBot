@@ -1,5 +1,6 @@
 server_id: mimzo_cdn_193
 telegram:
+  notify_success: false
   message_thread_id: ${TELEGRAM_MESSAGE_THREAD_ID}
   bot_token: ${TELEGRAM_BOT_TOKEN}
   chat_id: ${TELEGRAM_CHAT_ID}
@@ -13,7 +14,7 @@ storage:
 projects:
 - id: mimzo_cdn
   name: Mimzo cdn
-  schedule: 40 */6 * * *
+  schedule: 40 3 * * *
   timezone: Europe/Moscow
   paths:
   - /var/lib/backupbot/export
